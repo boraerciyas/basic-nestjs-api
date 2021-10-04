@@ -9,6 +9,8 @@ import { Model } from 'mongoose';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { AgentSchema } from '../agents/entities/agent.entity';
 import * as mongoose from 'mongoose';
+import { CitySchema } from '../cities/entities/city.entity';
+import { UpdateHouseDto } from './dto/update-house.dto';
 
 @Injectable()
 export class HousesService {
@@ -59,15 +61,11 @@ export class HousesService {
       .findById(agentId)
       .exec()
       .catch((r) => {
-        console.log('Hata: ' + r);
         error = true;
         throw new NotFoundException('Agent can not be found!');
       });
 
-    console.log(error);
-    if (error) {
-      // return new NotFoundException('Agent can not be found!');
-    } else {
+    if (!error) {
       return await this.houseModel
         .find()
         .where('agent')
@@ -76,24 +74,60 @@ export class HousesService {
           path: 'agent',
           select: 'name',
         })
+        .populate({
+          path: 'city',
+          select: 'name',
+        })
         .exec()
         .catch((e) => {
-          console.log('Hata2: ' + e);
           throw new NotFoundException('Agent can not be found!');
         });
     }
-    /*try {
+  }
 
-    } catch (error) {
-      throw new NotFoundException('Agent can not be found!');
-    }*/
-    /*await agentModel
-      .findById(agentId)
+  async findHousesByCity(cityId: string) {
+    const cityModel = mongoose.model('City', CitySchema);
+    let error = false;
+    cityModel
+      .findById(cityId)
       .exec()
-      .catch(function (err) {
-        console.log(err);
-        throw new NotFoundException('Agent can not be found!');
-      });*/
+      .catch((r) => {
+        error = true;
+        throw new NotFoundException('City can not be found!');
+      });
+
+    if (!error) {
+      return await this.houseModel
+        .find()
+        .where('city')
+        .equals(cityId)
+        .populate({
+          path: 'city',
+          select: 'name',
+        })
+        .populate({
+          path: 'agent',
+          select: 'name',
+        })
+        .exec()
+        .catch((e) => {
+          throw new NotFoundException('City can not be found!');
+        });
+    }
+  }
+
+  update(id: string, updateHouseDto: UpdateHouseDto) {
+    return this.houseModel.findByIdAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $set: updateHouseDto,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   /**

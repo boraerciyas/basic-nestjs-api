@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { HousesService } from './houses.service';
 import { CreateHouseDto } from './dto/create-house.dto';
+import { UpdateHouseDto } from './dto/update-house.dto';
 
 @Controller('houses')
 export class HousesController {
@@ -16,6 +25,11 @@ export class HousesController {
     return await this.housesService.findAll();
   }
 
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateHouseDto: UpdateHouseDto) {
+    return this.housesService.update(id, updateHouseDto);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.housesService.findOne(id);
@@ -24,6 +38,11 @@ export class HousesController {
   @Get('byAgent/:id')
   async findHousesByAgent(@Param('id') agentId: string) {
     return await this.housesService.findHousesByAgent(agentId);
+  }
+
+  @Get('byCity/:id')
+  async findHousesByCity(@Param('id') cityId: string) {
+    return await this.housesService.findHousesByCity(cityId);
   }
 
   @Delete(':id')
