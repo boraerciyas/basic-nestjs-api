@@ -18,12 +18,12 @@ export class HousesService {
     @InjectModel(House.name) private houseModel: Model<HouseDocument>,
   ) {}
 
-  create(createHouseDto: CreateHouseDto) {
+  async create(createHouseDto: CreateHouseDto) {
     const houseModel = new this.houseModel(createHouseDto);
     if (houseModel.bedroomCount < 1 || houseModel.bedroomCount > 10) {
       throw new BadRequestException('Bedroom Count should be between 1 to 10.');
     }
-    return houseModel.save();
+    return await houseModel.save();
   }
 
   async findAll() {
@@ -116,7 +116,7 @@ export class HousesService {
     }
   }
 
-  update(id: string, updateHouseDto: UpdateHouseDto) {
+  async update(id: string, updateHouseDto: UpdateHouseDto) {
     return this.houseModel.findByIdAndUpdate(
       {
         _id: id,

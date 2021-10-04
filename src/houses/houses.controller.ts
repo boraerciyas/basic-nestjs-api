@@ -26,8 +26,11 @@ export class HousesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHouseDto: UpdateHouseDto) {
-    return this.housesService.update(id, updateHouseDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateHouseDto: UpdateHouseDto,
+  ) {
+    return await this.housesService.update(id, updateHouseDto);
   }
 
   @Get(':id')
