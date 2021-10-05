@@ -32,6 +32,13 @@
 $ npm install
 ```
 
+## MongoDB Setting
+
+in **src/app.module.ts**, fill MongoDB connection string. 
+```
+mongodb+srv://<user>:<password>@<cluster>/tiko-demo?retryWrites=true&w=majority,
+```
+
 ## Running the app
 
 ```bash
